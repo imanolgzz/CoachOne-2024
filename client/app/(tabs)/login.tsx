@@ -11,6 +11,8 @@ import { ThemedView } from "@/components/ThemedView";
 const { width, height } = Dimensions.get('window');
 
 export default function Login() {
+    const [user, setUser] = React.useState('');
+    const [pass, setPass] = React.useState('');
     const [number, onChangeNumber] = React.useState('');
     const [isChecked, setChecked] = useState(false);
 
@@ -30,8 +32,11 @@ export default function Login() {
                     </Text>
                 </View>
                 <View style={styles.inputContainer}>
-                    <TextInput 
+                    <TextInput
+                        style={styles.input}
+                        value={user}
                         placeholder=" "
+                        onChangeText={setUser}
                     />
                 </View>
             </View>
@@ -42,8 +47,11 @@ export default function Login() {
                     </Text>
                 </View>
                 <View style={styles.inputContainer}>
-                    <TextInput 
+                    <TextInput
+                        style={styles.input}
+                        value={pass}
                         placeholder=" "
+                        onChangeText={setPass}
                     />
                 </View>
             </View>
@@ -55,7 +63,7 @@ export default function Login() {
             </View>
             <View style={styles.loginButton}>
                 <TouchableOpacity>
-                    <Text style={{alignSelf: 'center', color: 'white', fontSize: 20, fontWeight: 'bold', padding: 20}}>
+                    <Text onPress={() => console.log("\nUser: ", user, "\nPass: ", pass)} style={{alignSelf: 'center', color: 'white', fontSize: 20, fontWeight: 'bold', padding: 20}}>
                         Login
                     </Text>
                 </TouchableOpacity>
@@ -97,5 +105,11 @@ const styles = StyleSheet.create({
         height: 70,
         backgroundColor: 'red',
         borderRadius: 30
+    },
+    input: {
+        textAlign: "left",
+        fontSize: 20,
+        paddingTop: 10,
+        paddingLeft: 20,
     }
 })
