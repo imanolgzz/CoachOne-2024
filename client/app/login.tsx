@@ -10,7 +10,11 @@ import { ThemedView } from "@/components/ThemedView";
 
 const { width, height } = Dimensions.get('window');
 
-export default function Login() {
+interface LoginProps {
+    setLogedIn: Function;
+}
+
+export default function Login({setLogedIn}: LoginProps) {
     const [number, onChangeNumber] = React.useState('');
     const [isChecked, setChecked] = useState(false);
 
