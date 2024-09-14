@@ -14,7 +14,8 @@ interface LoginProps {
     setLogedIn: Function;
 }
 
-export default function Login({setLogedIn}: LoginProps) {    const [user, setUser] = React.useState('');
+export default function Login({setLogedIn}: LoginProps) {    
+    const [user, setUser] = React.useState('');
     const [pass, setPass] = React.useState('');
     const [number, onChangeNumber] = React.useState('');
     const [isChecked, setChecked] = useState(false);
