@@ -9,6 +9,7 @@ authRouter.use(express.json());
 
 authRouter.post('/register', async (req, res) => {
   try{
+    console.log(req.body);
     const {first_name, last_name, street_number, street_name, state, zip, password, confirm_password, email, city } = req.body;
     // verify that parammeters are not undefined
     if(!first_name || !last_name || !street_number || !street_name || !state || !zip || !password || !confirm_password || !email || !city){
@@ -84,7 +85,8 @@ authRouter.post('/register', async (req, res) => {
       password: hashedPassword
     });
     res.status(201).json({
-      message: "User created successfully"
+      message: "User created successfully",
+      user_id: responseData.objectCreated._id
     });
   } catch (error) {
     console.log("Error creating user: ", error);
@@ -94,6 +96,7 @@ authRouter.post('/register', async (req, res) => {
 
 authRouter.post('/login', async (req, res) => {
   try {
+    console.log(req.body)
     // recibe email and password, validate and output userId
     const {email, password} = req.body;
 
