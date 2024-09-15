@@ -1,4 +1,4 @@
-import { Image, StyleSheet, View, Text, Dimensions, ScrollView } from 'react-native';
+import { Image, StyleSheet, View, Text, Dimensions, ScrollView, TouchableOpacity } from 'react-native';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { OnBoarding } from '@/components/OnBoarding';
 import React from 'react';
@@ -20,7 +20,7 @@ interface Account {
   type: string;
 }
 
-async function createAccount(loggedIn : string, router : Router) {
+async function createAccount(loggedIn : string, router : Router, account : string) {
   try{
     const response = await fetch('http://10.22.236.99:4000/api/accounts/create', 
       {
@@ -31,11 +31,12 @@ async function createAccount(loggedIn : string, router : Router) {
           },
           body: JSON.stringify({
               user_id: loggedIn,
+              account_type: account
             }),
       });
       if(response.ok) {
           const data = await response.json();
-          router.push('./tabs');
+          router.navigate('/(tabs)');
           console.log(data.message);
       }
       else {
@@ -55,9 +56,9 @@ export default function HomeScreen() {
     { title: 'Savings'},
     { title: 'Credit Card'},
   ];
-  const [selectedAccount, setSelectedAccount] = React.useState(accounts[0]);
+  const [selectedAccount, setSelectedAccount] = React.useState(accounts[0].title);
   const [data, setData] = React.useState<Account[]>([]);
-  
+
   React.useEffect(() => {
     async function getData() {
       try {
@@ -106,30 +107,29 @@ export default function HomeScreen() {
 
           <View style={{alignSelf: 'center', width: '80%', marginTop: 30}}>
             <Text style={styles.textHeaders}>
-              Check your monthly fianance
-            </Text>
-          </View>
-
-          <View style={{alignSelf: 'center', width: '80%', marginTop: 30}}>
-            <Text style={styles.textHeaders}>
               Register new account
             </Text>
             <View>
               <SelectDropdown
       data={accounts}
       onSelect={(selectedItem) => {
-        setSelectedAccount(selectedItem);
+        setSelectedAccount(selectedItem.title);
       }}
       renderButton={(selectedItem, isOpened) => {
         return (
-          <View style={styles.dropdownButtonStyle}>
-            <Text style={styles.dropdownButtonTxtStyle}>
-              {(selectedItem && selectedItem.title) || 'Select your mood'}
-            </Text>
+          <View style={{display: "flex", flexDirection: 'column', alignItems: 'center'}}>
+            <View style={styles.dropdownButtonStyle}>
+              <Text style={styles.dropdownButtonTxtStyle}>
+                {(selectedItem && selectedItem.title) || 'Select your account'}
+              </Text>
+            </View>
+            <TouchableOpacity style={{display: 'flex', width: 150, height: 50, backgroundColor: "#004878", marginTop: 20, borderRadius: 10, alignItems: 'center', justifyContent: 'center'}} onPress={() => createAccount(loggedIn as string, router, selectedAccount as string)}> 
+              <Text style={{fontSize: 16, color: "#fff"}}>Create Account</Text>
+            </TouchableOpacity>
           </View>
         );
       }}
-      renderItem={(item, index, isSelected) => {
+      renderItem={(item, isSelected) => {
         return (
           <View style={{...styles.dropdownItemStyle, ...(isSelected && {backgroundColor: '#D2D9DF'})}}>
             <Text style={styles.dropdownItemTxtStyle}>{item.title}</Text>
@@ -141,10 +141,6 @@ export default function HomeScreen() {
     />
             </View>
           </View>
-        </View>
-
-        <View style={{ marginTop: 30, marginBottom: 10 }}>
-          <OnBoarding />
         </View>
 
         <View style={{ alignSelf: 'center', width: '80%', marginTop: 30 }}>
@@ -183,14 +179,15 @@ const styles = StyleSheet.create({
     fontSize: 24,
   },
   dropdownButtonStyle: {
-    width: 200,
+    width: 250,
     height: 50,
-    backgroundColor: '#E9ECEF',
+    backgroundColor: '#fff',
     borderRadius: 12,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 12,
+    marginTop: 20,
   },
   dropdownButtonTxtStyle: {
     flex: 1,
