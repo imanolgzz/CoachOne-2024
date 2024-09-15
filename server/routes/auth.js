@@ -52,23 +52,6 @@ authRouter.post('/register', async (req, res) => {
       return res.status(400).json({message: "User already exists"});
     }
 
-
-    /*
-      make a query to the following endpoint: 
-      POST http://api.nessieisreal.com/customers?key=8d03edc1ac4aba2e9db9aa396a68bfb3
-      {
-        "first_name": "string",
-        "last_name": "string",
-        "address": {
-          "street_number": "string",
-          "street_name": "string",
-          "city": "string",
-          "state": "string",
-          "zip": "string"
-        }
-      }
-    */
-
     const url = `http://api.nessieisreal.com/customers?key=${config.capitalone_api_key}`;
     const data = {
       first_name: first_name,
@@ -105,7 +88,7 @@ authRouter.post('/register', async (req, res) => {
       password: hashedPassword
     });
     res.status(201).json({
-      message: "User creatd successfully"
+      message: "User created successfully"
     });
   } catch (error) {
     console.log("Error creating user: ", error);
@@ -113,56 +96,42 @@ authRouter.post('/register', async (req, res) => {
   }
 })
 
-/*
-authRouter.post('/registerDummy', async (req, res) => {
-  try{
-      make a query to the following endpoint: 
-      POST http://api.nessieisreal.com/customers?key=8d03edc1ac4aba2e9db9aa396a68bfb3
-      {
-        "first_name": "string",
-        "last_name": "string",
-        "address": {
-          "street_number": "string",
-          "street_name": "string",
-          "city": "string",
-          "state": "string",
-          "zip": "string"
-        }
-      }
-    const url = `http://api.nessieisreal.com/customers?key=${config.capitalone_api_key}`;
-    const data = {
-      first_name: "H",
-      last_name: "H",
-      address: {
-        street_number: "JIJIJIJA",
-        street_name: "201",
-        city: "Monterrey",
-        state: "MA",
-        zip: "20120"
-      }
-    };
+authRouter.post('/login', async (req, res) => {
+  try {
+    // recibe email and password, validate and output userId
+    const {email, password} = req.body;
 
-    let response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
-      body: JSON.stringify(data)
-    });
-
-    if(response.status !== 201){
-      console.log("Error creating customer: ", response);
-      return res.status(500).json({message: "Error creating customer"});
+    // verify that parammeters are not undefined
+    if(!email || !password){
+      return res.status(400).json({message: "All fields are required"});
     }
-  
-    res.status(201).json({
-      message: "User creatd successfully"
+
+    try {
+      await connectMongoDB();
+    } catch (error) {
+      console.log("Error connecting to mongoDB: ", error);
+      return res.status(500).json({message: "Error connecting to mongoDB"});
+    }
+
+    const user = await Users.findOne({email}).select("_id password userId");
+    if(!user){
+      return res.status(400).json({message: "Invalid email or password"});
+    }
+    
+    const match = await bcrypt.compare(password, user.password);
+
+    if(!match){
+      return res.status(400).json({message: "Invalid email or password"});
+    }
+
+    res.status(200).json({
+      userId: user.userId
     });
+
   } catch (error) {
-    console.log("Error creating user: ", error);
-    res.status(500).json({message: "Error creating user"});
+    console.log("Error logging in user: ", error);
+    res.status(500).json({message: "Error logging in user"});
   }
 })
-*/
+
 export default authRouter;
