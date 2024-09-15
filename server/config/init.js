@@ -1,5 +1,9 @@
+import dotenv from 'dotenv'
+dotenv.config();
+
 const config = {
   port: process.env.PORT || 3500,
+  capitalone_api_key: process.env.CAPITAL_ONE_API_KEY,
   db: {
     host: 'localhost',
     port: 27017,
