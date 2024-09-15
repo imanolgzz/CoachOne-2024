@@ -8,6 +8,7 @@ const { width, height } = Dimensions.get('window');
 
 async function handleSignIn(first_name : string, last_name : string, street_name : string, street_number : string, city : string, state : string, zip : string, password : string, confirm_password : string, email : string) {
     try{
+        console.log(password, confirm_password);
         const response = await fetch('http://10.22.236.99:4000/api/auth/register', 
         {
             method: 'POST',
@@ -33,6 +34,7 @@ async function handleSignIn(first_name : string, last_name : string, street_name
             return data.user_id;
         }
         else {
+            console.log("Invalido");
             return "Invalido";
         }
     } catch (error) {
@@ -43,7 +45,7 @@ async function handleSignIn(first_name : string, last_name : string, street_name
 
 async function trySignIN(router : Router, step : string, setStep : Function, first_name : string, last_name : string, street_name : string, street_number : string, city : string, state : string, zip : string, password : string, confirm_password : string, email : string, setFirstNameValidation : Function, setLastNameValidation : Function, setStreetNumberValidation : Function, setStreetValidation : Function, setCityValidation : Function, setStateValidation : Function, setZipValidation : Function, setPassValidation : Function, setPassConfirmValidation : Function, setEmailValidation : Function, setLoggedIn : Function) {
     const valid = validateInputs(first_name, step, setStep, last_name, street_name, street_number, city, state, zip, password, confirm_password, email, setFirstNameValidation, setLastNameValidation, setStreetNumberValidation, setStreetValidation, setCityValidation, setStateValidation, setZipValidation, setPassValidation, setPassConfirmValidation, setEmailValidation)
-    if(valid && step === "3") {
+    if(valid && step === "4") {
         const user_id = await handleSignIn(first_name, last_name, street_name, street_number, city, state, zip, password, confirm_password, email); 
         if(user_id !== "Invalido" && user_id !== "Error") {
             setLoggedIn(user_id as string);
@@ -53,9 +55,7 @@ async function trySignIN(router : Router, step : string, setStep : Function, fir
 }
 
 function validateInputs(first_name : string, step : string, setStep : Function, last_name : string, street_name : string, street_number : string, city : string, state : string, zip : string, password : string, confirm_password : string, email : string, setFirstNameValidation : Function, setLastNameValidation : Function, setStreetNumberValidation : Function, setStreetValidation : Function, setCityValidation : Function, setStateValidation : Function, setZipValidation : Function, setPassValidation : Function, setPassConfirmValidation : Function, setEmailValidation : Function) {
-    let valid = true;
-    console.log('Validating inputs');
-    
+    let valid = true;    
     if(step === "1"){
         if(first_name === ''){
             setFirstNameValidation('First Name is required');
