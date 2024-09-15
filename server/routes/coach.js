@@ -1,21 +1,74 @@
 import OpenAI from "openai"
-import dotenv from 'dotenv'
+import express from 'express';
+import { config } from '../config/init.js';
+
 dotenv.config();
 
+const app = express();
+app.use(express.json())
+
 const openai = new OpenAI({
-    apiKey:process.env.OPENAI_API_KEY
+    apiKey:config.apiKey
 });
 
-async function main(){
-    const myAssistant = await openai.beta.assistants.create({
-        instructions:
-            "You are a personal finance coach, When asked a question about personal finances, or trading, write and run Javascript code to answer the question",
-        name:"Coach One",
-        tools:[{type:"code_interpreter"}],
-        model:"gpt-4o"
-    });
+const assistantId = "";
 
-    console.log(myAssistant)
+async function main(){
+
+    // console.log(myAssistant)
+
+    threads();
+
+
 }
 
+async function threads(){
+    const emptyThread=await openai.beta.threads.create();
+    console.log(emptyThread);
+    return emptyThread;
+}
+
+async function addMessage (threadId){
+    const threadMessages = await openai.beta.threads.messages.create(
+        "{threadId}",
+        { role: "user", content: "I would like you to give me a financial advice, I spend too much money on coffee, any suggestion" }
+      );
+    
+      console.log(threadMessages);
+}
+
+async function runAssistant(threadId){
+    const response =await openai.beta.threads.runs.create(
+        threadId,{
+            assistant_id:assistantId
+        }
+    );
+    console.log(response);
+    return response
+}
+
+
+
 main();
+
+
+//++++++++++++++++++++++++++++          ++++++++++++++++++++++++++++
+//                              Server
+//++++++++++++++++++++++++++++          ++++++++++++++++++++++++++++
+
+
+app.get('thread',(req,res) =>{
+    threads().then(thread =>{
+        res.json({threadId: thread.id})
+    });
+});
+
+app.post("/message",(req,res) =>{
+    const {message,threadId} = req.body;
+    addMessage(threadId).then(message =>{
+        runAssistant(threadId).then(run => {
+            const runId = run.id;
+        });
+
+    })
+})
