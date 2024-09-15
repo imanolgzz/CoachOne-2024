@@ -11,6 +11,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/accounts', accountsRouter);
 app.use("/api/accounts",financeRouter);
 app.use("/chatBot",chatBot);
+app.use("/api/finance",financeRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

@@ -5,8 +5,9 @@ financeRouter.use(express.json());
 
 financeRouter.post('/accounts', async (req, res) => {
     try {
-        const { medium, transaction_date, status, description, amount } = req.body;
-
+        console.log("flag");
+        const { medium, transaction_date, status, description, amount, user_id } = req.body;
+        console.log(req.body);
         if (!medium || !['balance', 'rewards'].includes(medium)) {
             return res.status(400).json({ error: 'Invalid medium' });
         }
@@ -14,19 +15,18 @@ financeRouter.post('/accounts', async (req, res) => {
             return res.status(400).json({ error: 'Invalid amount' });
         }
 
-        const user_id = req.user?.id; 
         if (!user_id) {
             return res.status(400).json({ error: 'User ID is required' });
         }
         
-        const url = `http://api.nessieisreal.com/customers/${user_id}/deposits?key=${config.capitalone_api_key}`;
+        const url = `http://api.nessieisreal.com/accounts/${user_id}/deposits?key=${config.capitalone_api_key}`;
         
         const requestBody = {
-            medium,
-            transaction_date,
-            status,
-            amount,
-            description
+            medium: medium,
+            transaction_date: transaction_date,
+            status: status,
+            amount: amount,
+            description: description
         };
 
         const response = await fetch(url, {
@@ -37,11 +37,13 @@ financeRouter.post('/accounts', async (req, res) => {
             body: JSON.stringify(requestBody)
         });
 
+        console.log(response);
         if (response.status === 404) {
-            const errorData = await response.json();
+            console.log(response)
             return res.status(404).json({
                 error: 'Account not found',
-                message: errorData.message || 'Please check the user ID or account information.'
+                message: response || 'Please check the user ID or account information.'
+            
             });
         }
 

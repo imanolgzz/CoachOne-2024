@@ -77,20 +77,6 @@ function validateInputs(first_name : string, step : string, setStep : Function, 
     }
     
     if(step === "2"){
-        if(street_number === ''){
-            setStreetNumberValidation('A Street Number is required');
-            valid = false;
-        } else{
-            setStreetNumberValidation('');
-        }
-        
-        if(street_name === ''){
-            setStreetValidation('A street is required');
-            valid = false;
-        } else {
-            setStreetValidation('');
-        }
-        
         if(city === ''){
             setCityValidation('A city is required');
             valid = false;
@@ -116,8 +102,27 @@ function validateInputs(first_name : string, step : string, setStep : Function, 
             setStep("3");
         }
     }
-    
+
     if(step === "3"){
+        if(street_number === ''){
+            setStreetNumberValidation('A Street Number is required');
+            valid = false;
+        } else{
+            setStreetNumberValidation('');
+        }
+        
+        if(street_name === ''){
+            setStreetValidation('A street is required');
+            valid = false;
+        } else {
+            setStreetValidation('');
+        }
+        if(valid){
+            setStep("4");
+        }
+    }
+    
+    if(step === "4"){
         if (email === '') {
             setEmailValidation('An email is required');
             valid = false;
@@ -146,7 +151,7 @@ function validateInputs(first_name : string, step : string, setStep : Function, 
 export default function CreateAccount() {
     const router = useRouter();
     const {setLoggedIn} = useAuth();
-    // 1) Name and Last name | 2) State, City, Zip, street, street Number | 3) Email, password, confirm password 
+    // 1) Name and Last name | 2) State, City, Zip | 3) Street, street Number  | 4) Email, password, confirm password 
     const [step, setStep] = React.useState("1");
 
     const [firstName, setFirstName] = React.useState('');
@@ -176,7 +181,7 @@ export default function CreateAccount() {
                 <View
                     style={{display: "flex", paddingTop: 10, alignItems: 'center', backgroundColor: 'white', width: width, height: height}}
                 >
-                    <View style={{marginVertical: 90}}>
+                    <View style={{marginTop:40}}>
                         <View style={CreateStyles.logoImageContainer}>
                             <Image source={require('@/assets/images/Logo_Capital_One.png')} style={CreateStyles.logoImage}/>
                         </View>
@@ -223,39 +228,6 @@ export default function CreateAccount() {
                             <View style={CreateStyles.viewInput}>
                                 <View>
                                     <Text style={CreateStyles.textHeader}>
-                                        Street Number
-                                    </Text>
-                                </View>
-                                <View style={!streetNumberValidation ? CreateStyles.inputContainer : CreateStyles.incorrectField}>
-                                    <TextInput
-                                        inputMode="numeric"
-                                        style={CreateStyles.input}
-                                        value={street}
-                                        placeholder=" "
-                                        onChangeText={setStreet}
-                                    />
-                                </View>
-                                {streetNumberValidation !== '' && <Text style={{color: 'red', marginVertical:5}}>{streetNumberValidation}</Text>}
-                            </View>
-                            <View style={CreateStyles.viewInput}>
-                                <View>
-                                    <Text style={CreateStyles.textHeader}>
-                                        Street Name
-                                    </Text>
-                                </View>
-                                <View style={!streetValidation ? CreateStyles.inputContainer : CreateStyles.incorrectField}>
-                                    <TextInput
-                                        style={CreateStyles.input}
-                                        value={streetNumber}
-                                        placeholder=" "
-                                        onChangeText={setStreetNumber}
-                                    />
-                                </View>
-                                {streetValidation !== '' && <Text style={{color: 'red', marginVertical:5}}>{streetNumberValidation}</Text>}
-                            </View>
-                            <View style={CreateStyles.viewInput}>
-                                <View>
-                                    <Text style={CreateStyles.textHeader}>
                                         City
                                     </Text>
                                 </View>
@@ -267,7 +239,7 @@ export default function CreateAccount() {
                                         onChangeText={setCity}
                                     />
                                 </View>
-                                {city !== '' && <Text style={{color: 'red', marginVertical:5}}>{cityValidation}</Text>}
+                                {cityValidation !== '' && <Text style={{color: 'red', marginVertical:5}}>{cityValidation}</Text>}
                             </View>
                             <View style={CreateStyles.viewInput}>
                                 <View>
@@ -306,7 +278,63 @@ export default function CreateAccount() {
                             </View>
                         </>
                         : <></> }
-                    {step === "3" ? <>
+                    {step === "3" ? 
+                        <>
+                            <View style={CreateStyles.viewInput}>
+                                <View>
+                                    <Text style={CreateStyles.textHeader}>
+                                        Street Number
+                                    </Text>
+                                </View>
+                                <View style={!streetNumberValidation ? CreateStyles.inputContainer : CreateStyles.incorrectField}>
+                                    <TextInput
+                                        inputMode="numeric"
+                                        style={CreateStyles.input}
+                                        value={street}
+                                        placeholder=" "
+                                        onChangeText={setStreet}
+                                    />
+                                </View>
+                                {streetNumberValidation !== '' && <Text style={{color: 'red', marginVertical:5}}>{streetNumberValidation}</Text>}
+                            </View>
+                            <View style={CreateStyles.viewInput}>
+                                <View>
+                                    <Text style={CreateStyles.textHeader}>
+                                        Street Name
+                                    </Text>
+                                </View>
+                                <View style={!streetValidation ? CreateStyles.inputContainer : CreateStyles.incorrectField}>
+                                    <TextInput
+                                        style={CreateStyles.input}
+                                        value={streetNumber}
+                                        placeholder=" "
+                                        onChangeText={setStreetNumber}
+                                    />
+                                </View>
+                                {streetValidation !== '' && <Text style={{color: 'red', marginVertical:5}}>{streetNumberValidation}</Text>}
+                            </View>
+                        </>
+                        : 
+                        <></>
+                    }
+                    {step === "4" ? <>
+                        <View style={CreateStyles.viewInput}>
+                            <View>
+                                <Text style={CreateStyles.textHeader}>
+                                    Email
+                                </Text>
+                            </View>
+                            <View style={!emailValidation ? CreateStyles.inputContainer : CreateStyles.incorrectField}>
+                                <TextInput
+                                    inputMode="email"
+                                    style={CreateStyles.input}
+                                    value={email}
+                                    placeholder=" "
+                                    onChangeText={setEmail}
+                                />
+                            </View>
+                            {emailValidation !== '' && <Text style={{color: 'red', marginVertical:5}}>{emailValidation}</Text>}
+                        </View>
                         <View style={CreateStyles.viewInput}>
                             <View>
                                 <Text style={CreateStyles.textHeader}>
@@ -341,31 +369,16 @@ export default function CreateAccount() {
                             </View>
                             {passConfirmValidation !== '' && <Text style={{color: 'red', marginVertical:5}}>{passConfirmValidation}</Text>}
                         </View>
-                        <View style={CreateStyles.viewInput}>
-                            <View>
-                                <Text style={CreateStyles.textHeader}>
-                                    Email
-                                </Text>
-                            </View>
-                            <View style={!emailValidation ? CreateStyles.inputContainer : CreateStyles.incorrectField}>
-                                <TextInput
-                                    inputMode="email"
-                                    style={CreateStyles.input}
-                                    value={email}
-                                    placeholder=" "
-                                    onChangeText={setEmail}
-                                />
-                            </View>
-                            {emailValidation !== '' && <Text style={{color: 'red', marginVertical:5}}>{emailValidation}</Text>}
-                        </View>
                     </>
                     : 
                     <></>
                     }
                     <View style={CreateStyles.loginButton}>
-                        <TouchableOpacity>
-                            <Text onPress={() => trySignIN(router, step, setStep,firstName, lastName, street, streetNumber, city, state, zip, pass, passConfirm, email, setFirstNameValidation, setLastNameValidation, setStreetNumberValidation, setStreetValidation, setCityValidation, setStateValidation, setZipValidation, setPassValidation, setPassConfirmValidation, setEmailValidation, setLoggedIn)} style={{alignSelf: 'center', color: 'white', fontSize: 20, fontWeight:'bold', padding: 15}}>
-                                { step !== "3" ? "Next" : "Create Account"}
+                        <TouchableOpacity style={{ display: "flex", width: width * 0.5, alignItems: 'center'}}>
+                            <Text 
+                                onPress={() => trySignIN(router, step, setStep,firstName, lastName, street, streetNumber, city, state, zip, pass, passConfirm, email, setFirstNameValidation, setLastNameValidation, setStreetNumberValidation, setStreetValidation, setCityValidation, setStateValidation, setZipValidation, setPassValidation, setPassConfirmValidation, setEmailValidation, setLoggedIn)} 
+                                style={{color: 'white', fontSize: 20, fontWeight:'bold', padding: 15}}>
+                                { step !== "4" ? "Next" : "Create Account"}
                             </Text>
                         </TouchableOpacity>
                     </View>
@@ -391,7 +404,7 @@ const CreateStyles = StyleSheet.create({
     },
     inputContainer: {
         width: "70%",
-        height: 50,
+        height: 60,
         borderWidth: 4,
         backgroundColor: 'white',
         borderColor: '#004878',
@@ -399,7 +412,7 @@ const CreateStyles = StyleSheet.create({
         marginTop: 5
     },
     loginButton : {
-        marginVertical: "auto",
+        marginTop: 50,
         width: width * 0.5,
         height: 60,
         backgroundColor: 'red',
@@ -413,7 +426,7 @@ const CreateStyles = StyleSheet.create({
         paddingHorizontal: 20,
     },
     viewInput: {
-        marginVertical: 20,
+        marginVertical: 30,
         marginHorizontal: 'auto',
         height: 60,
         width: width,

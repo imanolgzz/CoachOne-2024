@@ -2,11 +2,13 @@ import React, { useState, useRef } from "react";
 import {View, Text, StyleSheet, FlatList, Animated} from 'react-native';
 import slides from "./slides";
 import OnBoardingItem from "./OnBoardingItem";
+import stockData from '@/mock/companyPrices.json';
 
 export function OnBoarding(){
     const [currentIndex, setCurrentIndex] = useState(0);
     const scrollX = useRef(new Animated.Value(0)).current;
     const sliderRef = useRef(null);
+
     const viewableItemsChanged = useRef(({ viewableItems }) => {
         setCurrentIndex(viewableItems[0].index);
     }).current;
@@ -16,7 +18,7 @@ export function OnBoarding(){
     return(
         <View elevation={5} style={styles.container}>
             <FlatList 
-                data={slides} 
+                data={stockData.data} 
                 renderItem={({ item }) => <OnBoardingItem item={item} />} 
                 horizontal
                 showsHorizontalScrollIndicator
