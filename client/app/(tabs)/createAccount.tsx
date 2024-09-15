@@ -184,7 +184,8 @@ const styles = StyleSheet.create({
         width: 200,
         height: 60,
         backgroundColor: 'red',
-        borderRadius: 30
+        borderRadius: 30,
+        alignItems: 'center'
     },
     input: {
         textAlign: "left",
