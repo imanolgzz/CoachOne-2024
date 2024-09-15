@@ -45,7 +45,7 @@ export default function InvestmentSceen() {
                     </Text>
                 </View>
                 <View style={{alignItems: 'center', marginTop: 20}}>
-                    <View elevation={5} style={styles.boxContainer}>
+                    <View style={styles.boxContainer}>
                         <View style={{flex: 0.8, justifyContent: 'center'}}>
                             <Text style={styles.investmentText}>${apiValue}</Text>
                         </View>
@@ -100,7 +100,7 @@ export default function InvestmentSceen() {
                 </View>
                 <View>
                     {stockData.data.slice(0, 3).map((stock, index) => (
-                      <View key={index} elevation={5} style={styles.container}>
+                      <View key={index} style={styles.container}>
                         <View style={{ display: 'flex', justifyContent: 'space-between',flexDirection: 'row', width: '80%' }}>
                           <View>
                             <Text>{stock.name}</Text>
@@ -148,7 +148,8 @@ const styles = StyleSheet.create({
             height: 1,
             width: 1
         },
-        marginTop: 10
+        marginTop: 10,
+        elevation: 5
     },
     boxContainer: {
         display: 'flex',
@@ -164,6 +165,7 @@ const styles = StyleSheet.create({
             height: 1,
             width: 1
         },
+        elevation: 5
     },
     investmentText: {
         padding: 10,
