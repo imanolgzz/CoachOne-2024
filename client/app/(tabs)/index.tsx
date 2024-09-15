@@ -3,11 +3,48 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { OnBoarding } from '@/components/OnBoarding';
 import React from 'react';
 import { useAuth } from '@/hooks/AuthContext';
+import { Router, useRouter } from 'expo-router';
+import SelectDropdown from 'react-native-select-dropdown'
+
 
 const { width, height } = Dimensions.get('window');
 
+async function createAccount(loggedIn : string, router : Router) {
+  try{
+      const response = await fetch('http://10.22.236.99:4000/api/accounts/create', 
+      {
+          method: 'POST',
+          mode: 'cors',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+              user_id: loggedIn,
+            }),
+      });
+      if(response.ok) {
+          const data = await response.json();
+          router.push('./tabs');
+          console.log(data.message);
+      }
+      else {
+        console.log("No data found");
+      }
+  } catch (error) {
+      console.error("Error: ", error);
+  }
+}
+
+
 export default function HomeScreen() {
+  const router = useRouter();
   const {loggedIn} = useAuth();
+  const accounts = [
+    { title: 'Checking' },
+    { title: 'Savings'},
+    { title: 'Credit Card'},
+  ];
+  const [selectedAccount, setSelectedAccount] = React.useState(accounts[0]);
   const [data, setData] = React.useState([]);
 
   React.useEffect(() => {
@@ -72,6 +109,37 @@ export default function HomeScreen() {
             </Text>
           </View>
 
+          <View style={{alignSelf: 'center', width: '80%', marginTop: 30}}>
+            <Text style={styles.textHeaders}>
+              Register new account
+            </Text>
+            <View>
+              <SelectDropdown
+      data={accounts}
+      onSelect={(selectedItem) => {
+        setSelectedAccount(selectedItem);
+      }}
+      renderButton={(selectedItem, isOpened) => {
+        return (
+          <View style={styles.dropdownButtonStyle}>
+            <Text style={styles.dropdownButtonTxtStyle}>
+              {(selectedItem && selectedItem.title) || 'Select your mood'}
+            </Text>
+          </View>
+        );
+      }}
+      renderItem={(item, index, isSelected) => {
+        return (
+          <View style={{...styles.dropdownItemStyle, ...(isSelected && {backgroundColor: '#D2D9DF'})}}>
+            <Text style={styles.dropdownItemTxtStyle}>{item.title}</Text>
+          </View>
+        );
+      }}
+      showsVerticalScrollIndicator={false}
+      dropdownStyle={styles.dropdownMenuStyle}
+    />
+            </View>
+          </View>
         </View>
       </View>
     </ParallaxScrollView>
@@ -97,5 +165,50 @@ const styles = StyleSheet.create({
   },
   textHeaders: {
     fontSize: 24,
-  }
+  },
+  dropdownButtonStyle: {
+    width: 200,
+    height: 50,
+    backgroundColor: '#E9ECEF',
+    borderRadius: 12,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+  },
+  dropdownButtonTxtStyle: {
+    flex: 1,
+    fontSize: 18,
+    fontWeight: '500',
+    color: '#151E26',
+  },
+  dropdownButtonArrowStyle: {
+    fontSize: 28,
+  },
+  dropdownButtonIconStyle: {
+    fontSize: 28,
+    marginRight: 8,
+  },
+  dropdownMenuStyle: {
+    backgroundColor: '#E9ECEF',
+    borderRadius: 8,
+  },
+  dropdownItemStyle: {
+    width: '100%',
+    flexDirection: 'row',
+    paddingHorizontal: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 8,
+  },
+  dropdownItemTxtStyle: {
+    flex: 1,
+    fontSize: 18,
+    fontWeight: '500',
+    color: '#151E26',
+  },
+  dropdownItemIconStyle: {
+    fontSize: 28,
+    marginRight: 8,
+  },
 });
