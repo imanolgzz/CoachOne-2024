@@ -7,7 +7,7 @@ import { Router, useRouter, Stack } from 'expo-router';
 const { width, height } = Dimensions.get('window');
 
 export default function techInvestment() {
-    const calculatePercentageChange = (prices) => {
+    const calculatePercentageChange = (prices : any) => {
         const lastPrice = prices[prices.length - 1].price;
         const secondLastPrice = prices[prices.length - 2].price;
         const percentageChange = ((lastPrice - secondLastPrice) / secondLastPrice) * 100;

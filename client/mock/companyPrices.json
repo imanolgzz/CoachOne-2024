@@ -122,7 +122,7 @@
     },
     {
       "id": "5",
-      "name": "Boston Properties, Inc.",
+      "name": "Boston Properties",
       "type": "stock",
       "symbol": "BXP",
       "prices_last_20_days": [
@@ -152,7 +152,7 @@
     },
     {
       "id": "6",
-      "name": "Realty Income Corporation",
+      "name": "Realty Income",
       "type": "stock",
       "symbol": "O",
       "prices_last_20_days": [

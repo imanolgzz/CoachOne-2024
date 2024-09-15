@@ -1,10 +1,47 @@
 import { Image, StyleSheet, View, Text, Dimensions } from 'react-native';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { OnBoarding } from '@/components/OnBoarding';
+import React from 'react';
+import { useAuth } from '@/hooks/AuthContext';
 
 const { width, height } = Dimensions.get('window');
 
 export default function HomeScreen() {
+  const {loggedIn} = useAuth();
+  const [data, setData] = React.useState([]);
+
+  React.useEffect(() => {
+    async function getData() {
+      try{
+          const response = await fetch('http://10.22.236.99:4000/api/accounts/get', 
+          {
+              method: 'POST',
+              mode: 'cors',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                  user_id: loggedIn,
+                }),
+          });
+          if(response.ok) {
+              const data = await response.json();
+              console.log(data.accounts);
+              setData(data.accounts);
+          }
+          else {
+              setData([]);
+          }
+      } catch (error) {
+          console.error("Error: ", error);
+          setData([]);
+      }
+    }
+
+    getData();
+  }, []
+);
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#004878', dark: '#004878' }}

@@ -49,7 +49,6 @@ export default function Login() {
     const [user, setUser] = React.useState('');
     const [pass, setPass] = React.useState('');
     const [isChecked, setChecked] = useState(false);
-    console.log(loggedIn);
 
     return (
         <View 
