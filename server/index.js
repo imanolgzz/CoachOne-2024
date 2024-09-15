@@ -10,7 +10,7 @@ app.use(cors());
 app.use('/api/auth', authRouter);
 app.use('/api/accounts', accountsRouter);
 app.use("/api/finance",financeRouter);
-app.use("api/transfer",transferRouter);
+app.use("/api/transfer",transferRouter);
 
 
 app.listen(PORT, () => {

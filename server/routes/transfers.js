@@ -5,7 +5,8 @@ transferRouter.use(express.json());
 
 transferRouter.get('/accounts', async (req, res) => {
     try {
-        const { user_id, type } = req.query;
+        console.log("flag")
+        const { user_id, type } = req.body;
         if (!type || !['payer', 'payee'].includes(type)) {
             return res.status(400).json({ error: 'Invalid type' });
         }
