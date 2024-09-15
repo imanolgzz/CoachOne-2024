@@ -29,13 +29,13 @@ export default function RootLayout() {
   if (!loaded) {
     return null;
   }
-  console.log(loggedIn);
+  
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       {
         !loggedIn ? (
           <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="(accounts)" options={{ headerShown: false }} />
             <Stack.Screen name="+not-found" />
           </Stack>
         ) : (
