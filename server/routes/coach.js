@@ -9,38 +9,58 @@ const app = express();
 app.use(express.json());
 app.use(express.static('public'));  
 
+const openai = new OpenAI({
+    apiKey:config.OPENAI_API_KEY
+});
+
+const assistantId = config.OPENAI_ASSISTANT;
+let pollingInterval;
 
 
-const assistantId = "asst_wjm0DtGeNjs4EJhVrLUi46uV"; 
-
-async function threads(){
-    const emptyThread = await openai.beta.threads.create();
-    console.log(emptyThread);
-    return emptyThread;
+async function createThread(){
+    const threads = await openai.beta.threads.create();
+    return threads
 }
 
-async function waitOnRun(run,thread){
-
-}
-
-async function addMessage(threadId, messageContent) {
-    const threadMessages = await openai.beta.threads.messages.create(
-        threadId,
-        { role: "user", content: messageContent }
-    );
-    console.log(threadMessages);
-    return threadMessages;
-}
-
-async function runAssistant(threadId) {
-    const response = await openai.beta.threads.runs.create(
+async function addMessage(threadId,message){
+    const response = await openai.beta.threads.messages.create(
         threadId,
         {
-            assistant_id: assistantId
+            role:"user",
+            content:message
         }
     );
-    console.log(response);
-    return response;
+    return response
+}
+
+async function runAssistant(threadId){
+    const response = openai.beta.threads.run.create(
+        threadId,
+        {
+            assistant_id:assistantId
+        }
+    )
+    return response
+}
+
+async function checkinStatus(res,threadId,runId){
+    const runObject = await openai.beta.threads.runs.retrieve(
+        threadId,
+        runId
+    )
+
+    const status = runObject.status;
+    if(status=="completed"){
+        clearInterval(pollingInterval);
+        const messageList = await openai.beta.threads.messages.list(threadId);
+        let messages = [];
+
+        messageList.body.data.forEach(message => {
+            messages.push(message.content);
+        });
+
+        res.json({messages});
+    }
 }
 
 //++++++++++++++++++++++++++++          ++++++++++++++++++++++++++++
@@ -49,18 +69,22 @@ async function runAssistant(threadId) {
 
 // Create a new thread
 app.get('/thread', (req, res) => {
-    threads().then(thread => {
-        res.json({ threadId: thread.id });
-    }).catch(err => res.status(500).json({ error: err.message }));
+    createThread().then(thread =>{
+        res.json({threadId:thread.id})
+    })
 });
 
 app.post("/message", (req, res) => {
     const { message, threadId } = req.body;
-    addMessage(threadId, message).then(() => {
+    addMessage(threadId, message).then(message => {
         runAssistant(threadId).then(run => {
-            res.json({ runId: run.id });
-        }).catch(err => res.status(500).json({ error: err.message }));
-    }).catch(err => res.status(500).json({ error: err.message }));
+            const runId = run.id
+
+            pollingInterval = setInterval(()=>{
+                checkinStatus(res,threadId,runId);  
+            },5000);
+        })
+    })
 });
 
 app.get("/assistant-response", (req, res) => {
