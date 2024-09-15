@@ -5,9 +5,9 @@ import { config } from '../config/init.js';
 
 dotenv.config();
 
-const app = express();
-app.use(express.json());
-app.use(express.static('public'));  
+const chatBot = express.Router();
+chatBot.use(express.json());
+chatBot.use(express.static('public'));  
 
 const openai = new OpenAI({
     apiKey:config.OPENAI_API_KEY
@@ -68,13 +68,13 @@ async function checkinStatus(res,threadId,runId){
 //++++++++++++++++++++++++++++          ++++++++++++++++++++++++++++
 
 // Create a new thread
-app.get('/thread', (req, res) => {
+chatBot.get('/thread', (req, res) => {
     createThread().then(thread =>{
         res.json({threadId:thread.id})
     })
 });
 
-app.post("/message", (req, res) => {
+chatBot.post("/message", (req, res) => {
     const { message, threadId } = req.body;
     addMessage(threadId, message).then(message => {
         runAssistant(threadId).then(run => {
@@ -87,7 +87,9 @@ app.post("/message", (req, res) => {
     })
 });
 
-app.get("/assistant-response", (req, res) => {
+chatBot.get("/assistant-response", (req, res) => {
     const { runId } = req.query;
     res.json({ response: "This is a simulated response from the assistant." });
 });
+
+export default chatBot
