@@ -176,7 +176,7 @@ export default function CreateAccount() {
                 <View
                     style={{display: "flex", paddingTop: 10, alignItems: 'center', backgroundColor: 'white', width: width, height: height}}
                 >
-                    <View style={{marginVertical: 90}}>
+                    <View style={{marginTop:40}}>
                         <View style={CreateStyles.logoImageContainer}>
                             <Image source={require('@/assets/images/Logo_Capital_One.png')} style={CreateStyles.logoImage}/>
                         </View>
@@ -399,7 +399,7 @@ const CreateStyles = StyleSheet.create({
         marginTop: 5
     },
     loginButton : {
-        marginVertical: "auto",
+        marginTop: 30,
         width: width * 0.5,
         height: 60,
         backgroundColor: 'red',
@@ -413,7 +413,7 @@ const CreateStyles = StyleSheet.create({
         paddingHorizontal: 20,
     },
     viewInput: {
-        marginVertical: 20,
+        marginVertical: 30,
         marginHorizontal: 'auto',
         height: 60,
         width: width,
