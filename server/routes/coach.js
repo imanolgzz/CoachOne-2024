@@ -5,65 +5,88 @@ import { config } from '../config/init.js';
 
 dotenv.config();
 
-const app = express();
-app.use(express.json());
-app.use(express.static('public'));  
+const chatBot = express.Router();
+chatBot.use(express.json());
+chatBot.use(express.static('public'));
 
+const openai = new OpenAI({
+    apiKey: config.OPENAI_API_KEY
+});
 
+const assistantId = config.OPENAI_ASSISTANT;
+let pollingInterval;
 
-const assistantId = "asst_wjm0DtGeNjs4EJhVrLUi46uV"; 
-
-async function threads(){
-    const emptyThread = await openai.beta.threads.create();
-    console.log(emptyThread);
-    return emptyThread;
+async function createThread() {
+    const threads = await openai.beta.threads.create();
+    return threads;
 }
 
-async function waitOnRun(run,thread){
-
-}
-
-async function addMessage(threadId, messageContent) {
-    const threadMessages = await openai.beta.threads.messages.create(
+async function addMessage(threadId, message) {
+    const response = await openai.beta.threads.messages.create(
         threadId,
-        { role: "user", content: messageContent }
+        {
+            role: "user",
+            content: message
+        }
     );
-    console.log(threadMessages);
-    return threadMessages;
+    return response;
 }
 
 async function runAssistant(threadId) {
-    const response = await openai.beta.threads.runs.create(
+    const response = await openai.beta.threads.run.create(
         threadId,
         {
             assistant_id: assistantId
         }
     );
-    console.log(response);
     return response;
 }
 
-//++++++++++++++++++++++++++++          ++++++++++++++++++++++++++++
-//                              API Routes
-//++++++++++++++++++++++++++++          ++++++++++++++++++++++++++++
+async function checkinStatus(res, threadId, runId) {
+    const runObject = await openai.beta.threads.runs.retrieve(
+        threadId,
+        runId
+    );
+
+    const status = runObject.status;
+    if (status == "completed") {
+        clearInterval(pollingInterval);
+        const messageList = await openai.beta.threads.messages.list(threadId);
+        let messages = [];
+
+        messageList.body.data.forEach(message => {
+            messages.push(message.content);
+        });
+
+        res.json({ messages });
+    }
+}
 
 // Create a new thread
-app.get('/thread', (req, res) => {
-    threads().then(thread => {
+chatBot.get('/thread', async (req, res) => {
+    try {
+        const thread = await createThread();
         res.json({ threadId: thread.id });
-    }).catch(err => res.status(500).json({ error: err.message }));
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to create thread' });
+    }
 });
 
-app.post("/message", (req, res) => {
-    const { message, threadId } = req.body;
-    addMessage(threadId, message).then(() => {
-        runAssistant(threadId).then(run => {
-            res.json({ runId: run.id });
-        }).catch(err => res.status(500).json({ error: err.message }));
-    }).catch(err => res.status(500).json({ error: err.message }));
+chatBot.post("/message", async (req, res) => {
+    const {message,threadId} = req.body;
+    addMessage(threadId,message).then(message =>{
+        runAssistant(threadId).then(run =>{
+            const runId = run.id
+            pollingInterval = setInterval(() =>{
+                checkinStatus(res,threadId,runId);
+            },5000);
+        });
+    });
 });
 
-app.get("/assistant-response", (req, res) => {
+chatBot.get("/assistant-response", (req, res) => {
     const { runId } = req.query;
     res.json({ response: "This is a simulated response from the assistant." });
 });
+
+export default chatBot;
