@@ -3,14 +3,30 @@ import { useState } from 'react';
 import { StyleSheet, View, Image, Text, TextInput, Dimensions, TouchableOpacity, ScrollView, SafeAreaView} from "react-native";
 import Checkbox from 'expo-checkbox';
 import { useRouter } from 'expo-router';
+import { useAuth } from '@/hooks/AuthContext';
 
 const { width, height } = Dimensions.get('window');
 
+async function handleLoggin(user : string, pass: string) {
+    const response = await fetch('http://10.22.236.99:4000/api/auth/login', 
+    {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            email: user,
+            password: pass,
+        })
+    });
+    console.log(response);
+}
+
 export default function Login() {
+    const { setLoggedIn } = useAuth();
     const router = useRouter();
     const [user, setUser] = React.useState('');
     const [pass, setPass] = React.useState('');
-    const [number, onChangeNumber] = React.useState('');
     const [isChecked, setChecked] = useState(false);
 
     return (
@@ -60,7 +76,7 @@ export default function Login() {
             </View>
             <View style={LoginStyles.loginButton}>
                 <TouchableOpacity>
-                    <Text onPress={() => console.log("\nUser: ", user, "\nPass: ", pass)} style={{alignSelf: 'center', color: 'white', fontSize: 20, fontWeight: 'bold', padding: 20}}>
+                    <Text onPress={() => handleLoggin(user, pass)} style={{alignSelf: 'center', color: 'white', fontSize: 20, fontWeight: 'bold', padding: 20}}>
                         Login
                     </Text>
                 </TouchableOpacity>
