@@ -14,7 +14,6 @@ async function handleLoggin(user : string, pass: string) {
             method: 'POST',
             mode: 'cors',
             headers: {
-                'Access-Control-Allow-Origin': '*',
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
@@ -26,26 +25,31 @@ async function handleLoggin(user : string, pass: string) {
             const data = await response.json();
             return data.user_id;
         }
+        else {
+            return "Invalido";
+        }
     } catch (error) {
         console.error("Error: ", error);
-        return null;
+        return "Error";
     }
 }
 
 async function tryLogIN(router : Router, setLoggedIn : Function, user : string, pass : string) {
     const user_id = await handleLoggin(user, pass);
     setLoggedIn(user_id as string | null);
-    if(user_id) {
+    if(user_id !== "Invalido" && user_id !== "Error") {
         router.navigate("/(tabs)");
     }
 }
 
+
 export default function Login() {
     const router = useRouter();
-    const { setLoggedIn } = useAuth();
+    const { loggedIn, setLoggedIn } = useAuth();
     const [user, setUser] = React.useState('');
     const [pass, setPass] = React.useState('');
     const [isChecked, setChecked] = useState(false);
+    console.log(loggedIn);
 
     return (
         <View 
@@ -62,7 +66,7 @@ export default function Login() {
                         User
                     </Text>
                 </View>
-                <View style={LoginStyles.inputContainer}>
+                <View style={loggedIn === "Invalido" ? LoginStyles.incorrectField : LoginStyles.inputContainer}>
                     <TextInput
                         style={LoginStyles.input}
                         value={user}
@@ -77,8 +81,9 @@ export default function Login() {
                         Password
                     </Text>
                 </View>
-                <View style={LoginStyles.inputContainer}>
+                <View style={loggedIn === "Invalido" ? LoginStyles.incorrectField : LoginStyles.inputContainer}>
                     <TextInput
+                        secureTextEntry={true}
                         style={LoginStyles.input}
                         value={pass}
                         placeholder=" "
@@ -86,7 +91,11 @@ export default function Login() {
                     />
                 </View>
             </View>
-            <View style={{display: 'flex', flexDirection: 'row', marginTop: 10}}>
+            <View style={{marginVertical: 10}}>
+                {loggedIn === "Invalido" && <Text style={{color: 'red'}}>Usuario y/o contraseña incorrectos</Text>}
+                {loggedIn === "Error" && <Text style={{color: 'red'}}>Hubo un error en el servicio porfavor intente de nuevo más tarde</Text>}
+            </View>
+            <View style={{display: 'flex', flexDirection: 'row', marginVertical: 10}}>
                 <Checkbox value={isChecked} onValueChange={setChecked} style={{marginEnd: 5}} />
                 <Text style={{fontWeight: 'bold',}}>
                     Remember me
@@ -131,16 +140,25 @@ const LoginStyles = StyleSheet.create({
         marginTop: 10
     },
     loginButton : {
-        marginTop: 100,
+        marginTop: 90,
         width: 160,
         height: 70,
         backgroundColor: 'red',
         borderRadius: 30
     },
     input: {
-        margin: "auto",
-        padding: "auto",
+        marginVertical: "auto",
+        paddingHorizontal: 15,
         textAlign: "left",
         fontSize: 20,
+    },
+    incorrectField: {
+        width: 250,
+        height: 60,
+        borderWidth: 4,
+        backgroundColor: 'white',
+        borderColor: 'red',
+        borderRadius: 25,
+        marginTop: 10,
     }
 })

@@ -4,7 +4,6 @@ import { OnBoarding } from '@/components/OnBoarding';
 
 const { width, height } = Dimensions.get('window');
 
-
 export default function HomeScreen() {
   return (
     <ParallaxScrollView
