@@ -102,16 +102,20 @@ export default function Login() {
                 </Text>
             </View>
             <View style={LoginStyles.loginButton}>
-                <TouchableOpacity>
+                <TouchableOpacity style={{ display: "flex", width: 160, alignItems: 'center'}}>
                     <Text onPress={() => tryLogIN(router, setLoggedIn, user, pass)} style={{alignSelf: 'center', color: 'white', fontSize: 20, fontWeight: 'bold', padding: 20}}>
                         Login
                     </Text>
                 </TouchableOpacity>
             </View>
-            <View style={{marginTop: 50}}>
-                <Text onPress={() => router.push("./create")} style={{color: '#004878', fontSize: 16}}>
-                    Sign in
-                </Text>
+            <View style={{marginTop: 40, width: 100, height:100}}>
+                <TouchableOpacity style={{width: 100, height: 100}}> 
+                    <Text 
+                        onPress={() => router.push("./create")} 
+                        style={{color: '#004878', fontSize: 16, padding: 25}}>
+                        Sign in
+                    </Text>
+                </TouchableOpacity>
             </View>
     </View> 
     );
@@ -140,14 +144,14 @@ const LoginStyles = StyleSheet.create({
         marginTop: 10
     },
     loginButton : {
-        marginTop: 90,
+        marginTop: 80,
         width: 160,
         height: 70,
         backgroundColor: 'red',
         borderRadius: 30
     },
     input: {
-        marginVertical: "auto",
+        marginVertical: 12,
         paddingHorizontal: 15,
         textAlign: "left",
         fontSize: 20,
