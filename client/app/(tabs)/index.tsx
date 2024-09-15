@@ -212,4 +212,30 @@ const styles = StyleSheet.create({
     fontSize: 28,
     marginRight: 8,
   },
+  table: {
+    marginTop: 20,
+    alignSelf: 'center',
+    width: '80%',
+  },
+  tableHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingBottom: 10,
+    borderBottomWidth: 1,
+    borderColor: '#ddd',
+  },
+  tableHeaderText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  tableRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderColor: '#ddd',
+  },
+  tableCell: {
+    fontSize: 16,
+  },
 });
