@@ -13,7 +13,7 @@ export default function InvestmentSceen() {
         const secondLastPrice = prices[prices.length - 2].price;
         const percentageChange = ((lastPrice - secondLastPrice) / secondLastPrice) * 100;
         return percentageChange.toFixed(2); // Redondea a 2 decimales
-      };
+    };
 
     const getImageSource = () => {
         if (apiValue === null) {
