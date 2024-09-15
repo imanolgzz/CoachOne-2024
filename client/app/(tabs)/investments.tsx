@@ -8,12 +8,12 @@ const { width, height } = Dimensions.get('window');
 
 export default function InvestmentSceen() {
     const [apiValue, setApiValue] = useState(-1234.34);
-    const calculatePercentageChange = (prices) => {
+    const calculatePercentageChange = (prices : any) => {
         const lastPrice = prices[prices.length - 1].price;
         const secondLastPrice = prices[prices.length - 2].price;
         const percentageChange = ((lastPrice - secondLastPrice) / secondLastPrice) * 100;
         return percentageChange.toFixed(2); // Redondea a 2 decimales
-      };
+    };
 
     const getImageSource = () => {
         if (apiValue === null) {
