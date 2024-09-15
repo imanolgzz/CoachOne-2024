@@ -2,29 +2,47 @@ import React from "react";
 import { useState } from 'react';
 import { StyleSheet, View, Image, Text, TextInput, Dimensions, TouchableOpacity, ScrollView, SafeAreaView} from "react-native";
 import Checkbox from 'expo-checkbox';
-import { useRouter } from 'expo-router';
+import { Router, useRouter } from 'expo-router';
 import { useAuth } from '@/hooks/AuthContext';
 
 const { width, height } = Dimensions.get('window');
 
 async function handleLoggin(user : string, pass: string) {
-    const response = await fetch('http://10.22.236.99:4000/api/auth/login', 
-    {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            email: user,
-            password: pass,
-        })
-    });
-    console.log(response);
+    try{
+        const response = await fetch('http://10.22.236.99:4000/api/auth/login', 
+        {
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email: user,
+                password: pass,
+            }),
+        });
+        if(response.ok) {
+            const data = await response.json();
+            return data.user_id;
+        }
+    } catch (error) {
+        console.error("Error: ", error);
+        return null;
+    }
+}
+
+async function tryLogIN(router : Router, setLoggedIn : Function, user : string, pass : string) {
+    const user_id = await handleLoggin(user, pass);
+    setLoggedIn(user_id as string | null);
+    if(user_id) {
+        router.navigate("/(tabs)");
+    }
 }
 
 export default function Login() {
-    const { setLoggedIn } = useAuth();
     const router = useRouter();
+    const { setLoggedIn } = useAuth();
     const [user, setUser] = React.useState('');
     const [pass, setPass] = React.useState('');
     const [isChecked, setChecked] = useState(false);
@@ -76,7 +94,7 @@ export default function Login() {
             </View>
             <View style={LoginStyles.loginButton}>
                 <TouchableOpacity>
-                    <Text onPress={() => handleLoggin(user, pass)} style={{alignSelf: 'center', color: 'white', fontSize: 20, fontWeight: 'bold', padding: 20}}>
+                    <Text onPress={() => tryLogIN(router, setLoggedIn, user, pass)} style={{alignSelf: 'center', color: 'white', fontSize: 20, fontWeight: 'bold', padding: 20}}>
                         Login
                     </Text>
                 </TouchableOpacity>
