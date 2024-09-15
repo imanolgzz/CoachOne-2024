@@ -7,10 +7,6 @@ import { config } from '../config/init.js';
 const authRouter = express.Router();
 authRouter.use(express.json());
 
-authRouter.get('/', (req, res) => {
-  res.send("Hello World!");
-})
-
 authRouter.post('/register', async (req, res) => {
   try{
     const {first_name, last_name, street_number, street_name, state, zip, password, confirm_password, email, city } = req.body;
@@ -125,7 +121,7 @@ authRouter.post('/login', async (req, res) => {
     }
 
     res.status(200).json({
-      userId: user.userId
+      user_id: user.userId
     });
 
   } catch (error) {
