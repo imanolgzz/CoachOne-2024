@@ -99,6 +99,7 @@ authRouter.post('/login', async (req, res) => {
 
     // verify that parammeters are not undefined
     if(!email || !password){
+      console.log(email + " " + password);
       return res.status(400).json({message: "All fields are required"});
     }
 
