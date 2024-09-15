@@ -9,9 +9,20 @@ import SelectDropdown from 'react-native-select-dropdown'
 
 const { width, height } = Dimensions.get('window');
 
+// Define the Account type
+interface Account {
+  _id: string;
+  account_number: string;
+  balance: number;
+  customer_id: string;
+  nickname: string;
+  rewards: number;
+  type: string;
+}
+
 async function createAccount(loggedIn : string, router : Router) {
   try{
-      const response = await fetch('http://10.22.236.99:4000/api/accounts/create', 
+    const response = await fetch('http://10.22.236.99:4000/api/accounts/create', 
       {
           method: 'POST',
           mode: 'cors',
@@ -36,20 +47,9 @@ async function createAccount(loggedIn : string, router : Router) {
 }
 
 
-// Define the Account type
-interface Account {
-  _id: string;
-  account_number: string;
-  balance: number;
-  customer_id: string;
-  nickname: string;
-  rewards: number;
-  type: string;
-}
-
 export default function HomeScreen() {
   const router = useRouter();
-  const { loggedIn } = useAuth();
+  const {loggedIn} = useAuth();
   const accounts = [
     { title: 'Checking' },
     { title: 'Savings'},
@@ -57,7 +57,7 @@ export default function HomeScreen() {
   ];
   const [selectedAccount, setSelectedAccount] = React.useState(accounts[0]);
   const [data, setData] = React.useState<Account[]>([]);
-
+  
   React.useEffect(() => {
     async function getData() {
       try {
@@ -93,29 +93,24 @@ export default function HomeScreen() {
       headerText={<Text style={styles.clientName}>Hi, Imanol</Text>}
     >
       <View>
-        <View style={{ alignSelf: 'center', width: '80%', marginTop: 30 }}>
-          <Text style={styles.textHeaders}>Trending Companies</Text>
-        </View>
-
-        <View style={{ marginTop: 30, marginBottom: 10 }}>
-          <OnBoarding />
-        </View>
-
-        <View style={{ alignSelf: 'center', width: '80%', marginTop: 30 }}>
-          <Text style={styles.textHeaders}>Check your monthly finance</Text>
-        </View>
-
-        {/* Table to display balance and type */}
-        <ScrollView style={styles.table}>
-          <View style={styles.tableHeader}>
-            <Text style={styles.tableHeaderText}>Account Type</Text>
-            <Text style={styles.tableHeaderText}>Balance</Text>
+        <View>
+          <View style={{alignSelf: 'center', width: '80%', marginTop: 30}}>
+            <Text style={styles.textHeaders}>
+              Trending Companies
+            </Text>
           </View>
-          {data.map((item, index) => (
-            <View key={index} style={styles.tableRow}>
-              <Text style={styles.tableCell}>{item.type}</Text>
-              <Text style={styles.tableCell}>{item.balance}</Text>
-              <View style={{alignSelf: 'center', width: '80%', marginTop: 30}}>
+
+          <View style={{marginTop: 30, marginBottom: 10}}>
+            <OnBoarding />
+          </View>
+
+          <View style={{alignSelf: 'center', width: '80%', marginTop: 30}}>
+            <Text style={styles.textHeaders}>
+              Check your monthly fianance
+            </Text>
+          </View>
+
+          <View style={{alignSelf: 'center', width: '80%', marginTop: 30}}>
             <Text style={styles.textHeaders}>
               Register new account
             </Text>
@@ -147,6 +142,26 @@ export default function HomeScreen() {
             </View>
           </View>
         </View>
+
+        <View style={{ marginTop: 30, marginBottom: 10 }}>
+          <OnBoarding />
+        </View>
+
+        <View style={{ alignSelf: 'center', width: '80%', marginTop: 30 }}>
+          <Text style={styles.textHeaders}>Check your monthly finance</Text>
+        </View>
+
+        {/* Table to display balance and type */}
+        <ScrollView style={styles.table}>
+          <View style={styles.tableHeader}>
+            <Text style={styles.tableHeaderText}>Account Type</Text>
+            <Text style={styles.tableHeaderText}>Balance</Text>
+          </View>
+          {data.map((item, index) => (
+            <View key={index} style={styles.tableRow}>
+              <Text style={styles.tableCell}>{item.type}</Text>
+              <Text style={styles.tableCell}>{item.balance}</Text>
+            </View>
           ))}
         </ScrollView>
       </View>
