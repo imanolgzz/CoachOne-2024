@@ -1,13 +1,12 @@
 import React from "react";
-import { Link, Stack } from "expo-router";
 import { useState } from 'react';
-import { StyleSheet, View, Image, Text, Button, TextInput, Dimensions, TouchableOpacity, ScrollView, SafeAreaView} from "react-native";
-import { Header } from "react-native/Libraries/NewAppScreen";
+import { StyleSheet, View, Text, TextInput, Dimensions, TouchableOpacity, ScrollView, SafeAreaView} from "react-native";
+import { useRouter } from 'expo-router';
 
 const { width, height } = Dimensions.get('window');
 
 export default function CreateAccount() {
-
+    const router = useRouter();
     const [user, setUser] = React.useState('');
     const [pass, setPass] = React.useState('');
     const [number, onChangeNumber] = React.useState('');
@@ -19,119 +18,119 @@ export default function CreateAccount() {
                 <View
                     style={{display: "flex", paddingTop: 10, alignItems: 'flex-start',          backgroundColor: 'white', width: width, height: height, paddingStart: 10}}
                 >
-                    <View style={styles.viewInput}>
+                    <View style={CreateStyles.viewInput}>
                         <View>
-                            <Text style={styles.textHeader}>
+                            <Text style={CreateStyles.textHeader}>
                                 First Name
                             </Text>
                         </View>
-                        <View style={styles.inputContainer}>
+                        <View style={CreateStyles.inputContainer}>
                             <TextInput
-                                style={styles.input}
+                                style={CreateStyles.input}
                                 value={user}
                                 placeholder=" "
                                 onChangeText={setUser}
                             />
                         </View>
                     </View>
-                    <View style={styles.viewInput}>
+                    <View style={CreateStyles.viewInput}>
                         <View>
-                            <Text style={styles.textHeader}>
+                            <Text style={CreateStyles.textHeader}>
                                 Last Name
                             </Text>
                         </View>
-                        <View style={styles.inputContainer}>
+                        <View style={CreateStyles.inputContainer}>
                             <TextInput
-                                style={styles.input}
+                                style={CreateStyles.input}
                                 value={pass}
                                 placeholder=" "
                                 onChangeText={setPass}
                             />
                         </View>
                     </View>
-                    <View style={styles.viewInput}>
+                    <View style={CreateStyles.viewInput}>
                         <View>
-                            <Text style={styles.textHeader}>
+                            <Text style={CreateStyles.textHeader}>
                                 Street Number
                             </Text>
                         </View>
-                        <View style={styles.inputContainer}>
+                        <View style={CreateStyles.inputContainer}>
                             <TextInput
-                                style={styles.input}
+                                style={CreateStyles.input}
                                 value={pass}
                                 placeholder=" "
                                 onChangeText={setPass}
                             />
                         </View>
                     </View>
-                    <View style={styles.viewInput}>
+                    <View style={CreateStyles.viewInput}>
                         <View>
-                            <Text style={styles.textHeader}>
+                            <Text style={CreateStyles.textHeader}>
                                 Street Name
                             </Text>
                         </View>
-                        <View style={styles.inputContainer}>
+                        <View style={CreateStyles.inputContainer}>
                             <TextInput
-                                style={styles.input}
+                                style={CreateStyles.input}
                                 value={pass}
                                 placeholder=" "
                                 onChangeText={setPass}
                             />
                         </View>
                     </View>
-                    <View style={styles.viewInput}>
+                    <View style={CreateStyles.viewInput}>
                         <View>
-                            <Text style={styles.textHeader}>
+                            <Text style={CreateStyles.textHeader}>
                                 State
                             </Text>
                         </View>
-                        <View style={styles.inputContainer}>
+                        <View style={CreateStyles.inputContainer}>
                             <TextInput
-                                style={styles.input}
+                                style={CreateStyles.input}
                                 value={pass}
                                 placeholder=" "
                                 onChangeText={setPass}
                             />
                         </View>
                     </View>
-                    <View style={styles.viewInput}>
+                    <View style={CreateStyles.viewInput}>
                         <View>
-                            <Text style={styles.textHeader}>
+                            <Text style={CreateStyles.textHeader}>
                                 Zip
                             </Text>
                         </View>
-                        <View style={styles.inputContainer}>
+                        <View style={CreateStyles.inputContainer}>
                             <TextInput
-                                style={styles.input}
+                                style={CreateStyles.input}
                                 value={pass}
                                 placeholder=" "
                                 onChangeText={setPass}
                             />
                         </View>
                     </View>
-                    <View style={styles.viewInput}>
+                    <View style={CreateStyles.viewInput}>
                         <View>
-                            <Text style={styles.textHeader}>
+                            <Text style={CreateStyles.textHeader}>
                                 Password
                             </Text>
                         </View>
-                        <View style={styles.inputContainer}>
+                        <View style={CreateStyles.inputContainer}>
                             <TextInput
-                                style={styles.input}
+                                style={CreateStyles.input}
                                 value={pass}
                                 placeholder=" "
                                 onChangeText={setPass}
                             />
                         </View>
-                    </View><View style={styles.viewInput}>
+                    </View><View style={CreateStyles.viewInput}>
                         <View>
-                            <Text style={styles.textHeader}>
+                            <Text style={CreateStyles.textHeader}>
                                 Confirm Password
                             </Text>
                         </View>
-                        <View style={styles.inputContainer}>
+                        <View style={CreateStyles.inputContainer}>
                             <TextInput
-                                style={styles.input}
+                                style={CreateStyles.input}
                                 value={pass}
                                 placeholder=" "
                                 onChangeText={setPass}
@@ -139,7 +138,7 @@ export default function CreateAccount() {
                         </View>
                     </View>
 
-                    <View style={styles.loginButton}>
+                    <View style={CreateStyles.loginButton}>
                         <TouchableOpacity>
                             <Text onPress={() => console.log("\nUser: ", user, "\nPass: ",  pass)}   style={{alignSelf: 'center', color: 'white', fontSize: 20,  fontWeight:    'bold', padding: 15}}>
                                 Create Account
@@ -149,22 +148,10 @@ export default function CreateAccount() {
                 </View>
             </ScrollView>
         </SafeAreaView>
-        
-    )
+    );
 }
 
-
-// first_name
-// last_name
-// street_number
-// street_name
-// state
-// zip
-// password
-// confirm_password
-
-
-const styles = StyleSheet.create({
+const CreateStyles = StyleSheet.create({
     textHeader : {
         fontSize: 18,
         fontWeight: 'bold',

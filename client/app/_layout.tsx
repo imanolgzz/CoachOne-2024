@@ -7,7 +7,6 @@ import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 import React from 'react';
-import Login from '@/app/login';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -34,7 +33,10 @@ export default function RootLayout() {
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       {
         !logedIn ? (
-         <Login setLogedIn={setLogedIn} />
+          <Stack>
+            <Stack.Screen name="(accounts)" options={{ headerShown: false }} />
+            <Stack.Screen name="+not-found" />
+          </Stack>
         ) : (
           <Stack>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />

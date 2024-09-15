@@ -1,20 +1,13 @@
 import React from "react";
-import { Link, Stack } from "expo-router";
 import { useState } from 'react';
-import { StyleSheet, View, Image, Text, Button, TextInput, Dimensions, TouchableOpacity} from "react-native";
+import { StyleSheet, View, Image, Text, TextInput, Dimensions, TouchableOpacity, ScrollView, SafeAreaView} from "react-native";
 import Checkbox from 'expo-checkbox';
-import { Gesture, GestureHandlerRootView } from "react-native-gesture-handler";
-import ParallaxScrollView from "@/components/ParallaxScrollView";
-import { Ionicons } from "@expo/vector-icons";
-import { ThemedView } from "@/components/ThemedView";
+import { useRouter } from 'expo-router';
 
 const { width, height } = Dimensions.get('window');
 
-interface LoginProps {
-    setLogedIn: Function;
-}
-
-export default function Login({setLogedIn}: LoginProps) {    
+export default function Login() {
+    const router = useRouter();
     const [user, setUser] = React.useState('');
     const [pass, setPass] = React.useState('');
     const [number, onChangeNumber] = React.useState('');
@@ -25,19 +18,19 @@ export default function Login({setLogedIn}: LoginProps) {
             style={{display: "flex", paddingTop: 150, paddingBottom: 20, alignItems: 'center', backgroundColor: 'white', width: width, height: height}}
         >
             <View>
-                <View style={styles.logoImageContainer}>
-                    <Image source={require('@/assets/images/Logo_Capital_One.png')} style={styles.logoImage}/>
+                <View style={LoginStyles.logoImageContainer}>
+                    <Image source={require('@/assets/images/Logo_Capital_One.png')} style={LoginStyles.logoImage}/>
                 </View>
             </View>
             <View style={{alignItems: 'center', width: 700, height: 100, marginTop: 60}}>
                 <View style={{marginStart: -200}}>
-                    <Text style={styles.textHeader}>
+                    <Text style={LoginStyles.textHeader}>
                         User
                     </Text>
                 </View>
-                <View style={styles.inputContainer}>
+                <View style={LoginStyles.inputContainer}>
                     <TextInput
-                        style={styles.input}
+                        style={LoginStyles.input}
                         value={user}
                         placeholder=" "
                         onChangeText={setUser}
@@ -46,13 +39,13 @@ export default function Login({setLogedIn}: LoginProps) {
             </View>
             <View style={{alignItems: 'center', marginTop: 30}}>
                 <View style={{marginStart: -150}}>
-                    <Text style={styles.textHeader}>
+                    <Text style={LoginStyles.textHeader}>
                         Password
                     </Text>
                 </View>
-                <View style={styles.inputContainer}>
+                <View style={LoginStyles.inputContainer}>
                     <TextInput
-                        style={styles.input}
+                        style={LoginStyles.input}
                         value={pass}
                         placeholder=" "
                         onChangeText={setPass}
@@ -65,7 +58,7 @@ export default function Login({setLogedIn}: LoginProps) {
                     Remember me
                 </Text>
             </View>
-            <View style={styles.loginButton}>
+            <View style={LoginStyles.loginButton}>
                 <TouchableOpacity>
                     <Text onPress={() => console.log("\nUser: ", user, "\nPass: ", pass)} style={{alignSelf: 'center', color: 'white', fontSize: 20, fontWeight: 'bold', padding: 20}}>
                         Login
@@ -73,15 +66,15 @@ export default function Login({setLogedIn}: LoginProps) {
                 </TouchableOpacity>
             </View>
             <View style={{marginTop: 50}}>
-                <Text onPress={() => {alert('but this is');}} style={{color: '#004878', fontSize: 16}}>
+                <Text onPress={() => router.push("./create")} style={{color: '#004878', fontSize: 16}}>
                     Sign in
                 </Text>
             </View>
     </View> 
-    )
+    );
 }
 
-const styles = StyleSheet.create({
+const LoginStyles = StyleSheet.create({
     logoImageContainer : {
         width: 250,
         height: 90
@@ -111,9 +104,9 @@ const styles = StyleSheet.create({
         borderRadius: 30
     },
     input: {
+        margin: "auto",
+        padding: "auto",
         textAlign: "left",
         fontSize: 20,
-        paddingTop: 10,
-        paddingLeft: 20,
     }
 })
