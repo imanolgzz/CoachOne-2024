@@ -310,6 +310,23 @@ export default function CreateAccount() {
                         <View style={CreateStyles.viewInput}>
                             <View>
                                 <Text style={CreateStyles.textHeader}>
+                                    Email
+                                </Text>
+                            </View>
+                            <View style={!emailValidation ? CreateStyles.inputContainer : CreateStyles.incorrectField}>
+                                <TextInput
+                                    inputMode="email"
+                                    style={CreateStyles.input}
+                                    value={email}
+                                    placeholder=" "
+                                    onChangeText={setEmail}
+                                />
+                            </View>
+                            {emailValidation !== '' && <Text style={{color: 'red', marginVertical:5}}>{emailValidation}</Text>}
+                        </View>
+                        <View style={CreateStyles.viewInput}>
+                            <View>
+                                <Text style={CreateStyles.textHeader}>
                                     Password
                                 </Text>
                             </View>
@@ -340,23 +357,6 @@ export default function CreateAccount() {
                                 />
                             </View>
                             {passConfirmValidation !== '' && <Text style={{color: 'red', marginVertical:5}}>{passConfirmValidation}</Text>}
-                        </View>
-                        <View style={CreateStyles.viewInput}>
-                            <View>
-                                <Text style={CreateStyles.textHeader}>
-                                    Email
-                                </Text>
-                            </View>
-                            <View style={!emailValidation ? CreateStyles.inputContainer : CreateStyles.incorrectField}>
-                                <TextInput
-                                    inputMode="email"
-                                    style={CreateStyles.input}
-                                    value={email}
-                                    placeholder=" "
-                                    onChangeText={setEmail}
-                                />
-                            </View>
-                            {emailValidation !== '' && <Text style={{color: 'red', marginVertical:5}}>{emailValidation}</Text>}
                         </View>
                     </>
                     : 
