@@ -1,4 +1,4 @@
-import { Image, StyleSheet, View, Text, Dimensions, FlatList } from 'react-native';
+import { Image, StyleSheet, View, Text, Dimensions, ScrollView } from 'react-native';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { OnBoarding } from '@/components/OnBoarding';
 import React from 'react';
@@ -6,9 +6,20 @@ import { useAuth } from '@/hooks/AuthContext';
 
 const { width, height } = Dimensions.get('window');
 
+// Define the Account type
+interface Account {
+  _id: string;
+  account_number: string;
+  balance: number;
+  customer_id: string;
+  nickname: string;
+  rewards: number;
+  type: string;
+}
+
 export default function HomeScreen() {
   const { loggedIn } = useAuth();
-  const [data, setData] = React.useState([]);
+  const [data, setData] = React.useState<Account[]>([]);
 
   React.useEffect(() => {
     async function getData() {
@@ -24,9 +35,8 @@ export default function HomeScreen() {
           }),
         });
         if (response.ok) {
-          const data = await response.json();
-          console.log(data.accounts);
-          setData(data.accounts);
+          const result = await response.json();
+          setData(result.accounts);
         } else {
           setData([]);
         }
@@ -38,13 +48,6 @@ export default function HomeScreen() {
 
     getData();
   }, []);
-
-  const renderAccount = ({ item } : any) => (
-    <View style={styles.tableRow}>
-      <Text style={styles.tableCell}>{item.type}</Text>
-      <Text style={styles.tableCell}>{item.balance}</Text>
-    </View>
-  );
 
   return (
     <ParallaxScrollView
@@ -66,17 +69,18 @@ export default function HomeScreen() {
         </View>
 
         {/* Table to display balance and type */}
-        <View style={styles.table}>
+        <ScrollView style={styles.table}>
           <View style={styles.tableHeader}>
             <Text style={styles.tableHeaderText}>Account Type</Text>
             <Text style={styles.tableHeaderText}>Balance</Text>
           </View>
-          <FlatList
-            data={data}
-            renderItem={renderAccount}
-            keyExtractor={(item, index) => index.toString()}
-          />
-        </View>
+          {data.map((item, index) => (
+            <View key={index} style={styles.tableRow}>
+              <Text style={styles.tableCell}>{item.type}</Text>
+              <Text style={styles.tableCell}>{item.balance}</Text>
+            </View>
+          ))}
+        </ScrollView>
       </View>
     </ParallaxScrollView>
   );
@@ -91,9 +95,6 @@ const styles = StyleSheet.create({
     marginTop: 15,
     color: 'white',
     fontSize: 20,
-  },
-  container: {
-    flex: 1,
   },
   textHeaders: {
     fontSize: 24,
