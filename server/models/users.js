@@ -4,6 +4,10 @@ const { Schema, models } = mongoose;
 
 const usersSchema = new Schema(
   {
+    userId: {
+      type: String,
+      required: true,
+    },
     email: {
       type: String,
       required: true,
@@ -12,6 +16,7 @@ const usersSchema = new Schema(
       type: String,
       required: true,
     },
+
   },
   { timestamps: true }
 );
