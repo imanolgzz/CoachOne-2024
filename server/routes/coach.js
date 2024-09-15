@@ -7,50 +7,49 @@ dotenv.config();
 
 const chatBot = express.Router();
 chatBot.use(express.json());
-chatBot.use(express.static('public'));  
+chatBot.use(express.static('public'));
 
 const openai = new OpenAI({
-    apiKey:config.OPENAI_API_KEY
+    apiKey: config.OPENAI_API_KEY
 });
 
 const assistantId = config.OPENAI_ASSISTANT;
 let pollingInterval;
 
-
-async function createThread(){
+async function createThread() {
     const threads = await openai.beta.threads.create();
-    return threads
+    return threads;
 }
 
-async function addMessage(threadId,message){
+async function addMessage(threadId, message) {
     const response = await openai.beta.threads.messages.create(
         threadId,
         {
-            role:"user",
-            content:message
+            role: "user",
+            content: message
         }
     );
-    return response
+    return response;
 }
 
-async function runAssistant(threadId){
-    const response = openai.beta.threads.run.create(
+async function runAssistant(threadId) {
+    const response = await openai.beta.threads.run.create(
         threadId,
         {
-            assistant_id:assistantId
+            assistant_id: assistantId
         }
-    )
-    return response
+    );
+    return response;
 }
 
-async function checkinStatus(res,threadId,runId){
+async function checkinStatus(res, threadId, runId) {
     const runObject = await openai.beta.threads.runs.retrieve(
         threadId,
         runId
-    )
+    );
 
     const status = runObject.status;
-    if(status=="completed"){
+    if (status == "completed") {
         clearInterval(pollingInterval);
         const messageList = await openai.beta.threads.messages.list(threadId);
         let messages = [];
@@ -59,32 +58,30 @@ async function checkinStatus(res,threadId,runId){
             messages.push(message.content);
         });
 
-        res.json({messages});
+        res.json({ messages });
     }
 }
 
-//++++++++++++++++++++++++++++          ++++++++++++++++++++++++++++
-//                              API Routes
-//++++++++++++++++++++++++++++          ++++++++++++++++++++++++++++
-
 // Create a new thread
-chatBot.get('/thread', (req, res) => {
-    createThread().then(thread =>{
-        res.json({threadId:thread.id})
-    })
+chatBot.get('/thread', async (req, res) => {
+    try {
+        const thread = await createThread();
+        res.json({ threadId: thread.id });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to create thread' });
+    }
 });
 
-chatBot.post("/message", (req, res) => {
-    const { message, threadId } = req.body;
-    addMessage(threadId, message).then(message => {
-        runAssistant(threadId).then(run => {
+chatBot.post("/message", async (req, res) => {
+    const {message,threadId} = req.body;
+    addMessage(threadId,message).then(message =>{
+        runAssistant(threadId).then(run =>{
             const runId = run.id
-
-            pollingInterval = setInterval(()=>{
-                checkinStatus(res,threadId,runId);  
+            pollingInterval = setInterval(() =>{
+                checkinStatus(res,threadId,runId);
             },5000);
-        })
-    })
+        });
+    });
 });
 
 chatBot.get("/assistant-response", (req, res) => {
@@ -92,4 +89,4 @@ chatBot.get("/assistant-response", (req, res) => {
     res.json({ response: "This is a simulated response from the assistant." });
 });
 
-export default chatBot
+export default chatBot;
