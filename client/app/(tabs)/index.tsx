@@ -1,5 +1,4 @@
-import { Image, StyleSheet, Platform, View, Text, Dimensions } from 'react-native';
-import PagerView from 'react-native-pager-view';
+import { Image, StyleSheet, View, Text, Dimensions } from 'react-native';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { OnBoarding } from '@/components/OnBoarding';
 

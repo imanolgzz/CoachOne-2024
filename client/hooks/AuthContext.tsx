@@ -2,8 +2,8 @@ import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 // Define the context type
 interface AuthContextType {
-  loggedIn: boolean;
-  setLoggedIn: (value: boolean) => void;
+  loggedIn: string | null;
+  setLoggedIn: (value: string | null) => void;
 }
 
 // Create the context
@@ -11,7 +11,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Provider component
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [loggedIn, setLoggedIn] = useState<string | null>(null);
 
   return (
     <AuthContext.Provider value={{ loggedIn, setLoggedIn }}>

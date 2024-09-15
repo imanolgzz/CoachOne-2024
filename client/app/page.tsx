@@ -7,13 +7,13 @@ import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 import React from 'react';
-import { AuthProvider, useAuth } from '@/hooks/AuthContext';
+import { useAuth } from '@/hooks/AuthContext';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const { loggedIn, setLoggedIn } = useAuth();
+  const { loggedIn } = useAuth();
 
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
@@ -29,13 +29,13 @@ export default function RootLayout() {
   if (!loaded) {
     return null;
   }
-
+  console.log(loggedIn);
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       {
         !loggedIn ? (
           <Stack>
-            <Stack.Screen name="(accounts)" options={{ headerShown: false }} />
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="+not-found" />
           </Stack>
         ) : (
