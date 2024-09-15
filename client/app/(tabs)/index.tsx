@@ -1,8 +1,11 @@
-import { Image, StyleSheet, View, Text, Dimensions, ScrollView } from 'react-native';
+import { Image, StyleSheet, View, Text, Dimensions, ScrollView, TouchableOpacity } from 'react-native';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { OnBoarding } from '@/components/OnBoarding';
 import React from 'react';
 import { useAuth } from '@/hooks/AuthContext';
+import { Router, useRouter } from 'expo-router';
+import SelectDropdown from 'react-native-select-dropdown'
+
 
 const { width, height } = Dimensions.get('window');
 
@@ -17,8 +20,43 @@ interface Account {
   type: string;
 }
 
+async function createAccount(loggedIn : string, router : Router, account : string) {
+  try{
+    const response = await fetch('http://10.22.236.99:4000/api/accounts/create', 
+      {
+          method: 'POST',
+          mode: 'cors',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+              user_id: loggedIn,
+              account_type: account
+            }),
+      });
+      if(response.ok) {
+          const data = await response.json();
+          router.navigate('/(tabs)');
+          console.log(data.message);
+      }
+      else {
+        console.log("No data found");
+      }
+  } catch (error) {
+      console.error("Error: ", error);
+  }
+}
+
+
 export default function HomeScreen() {
-  const { loggedIn } = useAuth();
+  const router = useRouter();
+  const {loggedIn} = useAuth();
+  const accounts = [
+    { title: 'Checking' },
+    { title: 'Savings'},
+    { title: 'Credit Card'},
+  ];
+  const [selectedAccount, setSelectedAccount] = React.useState(accounts[0].title);
   const [data, setData] = React.useState<Account[]>([]);
 
   React.useEffect(() => {
@@ -56,12 +94,53 @@ export default function HomeScreen() {
       headerText={<Text style={styles.clientName}>Hi, Imanol</Text>}
     >
       <View>
-        <View style={{ alignSelf: 'center', width: '80%', marginTop: 30 }}>
-          <Text style={styles.textHeaders}>Trending Companies</Text>
-        </View>
+        <View>
+          <View style={{alignSelf: 'center', width: '80%', marginTop: 30}}>
+            <Text style={styles.textHeaders}>
+              Trending Companies
+            </Text>
+          </View>
 
-        <View style={{ marginTop: 30, marginBottom: 10 }}>
-          <OnBoarding />
+          <View style={{marginTop: 30, marginBottom: 10}}>
+            <OnBoarding />
+          </View>
+
+          <View style={{alignSelf: 'center', width: '80%', marginTop: 30}}>
+            <Text style={styles.textHeaders}>
+              Register new account
+            </Text>
+            <View>
+              <SelectDropdown
+      data={accounts}
+      onSelect={(selectedItem) => {
+        setSelectedAccount(selectedItem.title);
+      }}
+      renderButton={(selectedItem, isOpened) => {
+        return (
+          <View style={{display: "flex", flexDirection: 'column', alignItems: 'center'}}>
+            <View style={styles.dropdownButtonStyle}>
+              <Text style={styles.dropdownButtonTxtStyle}>
+                {(selectedItem && selectedItem.title) || 'Select your account'}
+              </Text>
+            </View>
+            <TouchableOpacity style={{display: 'flex', width: 150, height: 50, backgroundColor: "#004878", marginTop: 20, borderRadius: 10, alignItems: 'center', justifyContent: 'center'}} onPress={() => createAccount(loggedIn as string, router, selectedAccount as string)}> 
+              <Text style={{fontSize: 16, color: "#fff"}}>Create Account</Text>
+            </TouchableOpacity>
+          </View>
+        );
+      }}
+      renderItem={(item, isSelected) => {
+        return (
+          <View style={{...styles.dropdownItemStyle, ...(isSelected && {backgroundColor: '#D2D9DF'})}}>
+            <Text style={styles.dropdownItemTxtStyle}>{item.title}</Text>
+          </View>
+        );
+      }}
+      showsVerticalScrollIndicator={false}
+      dropdownStyle={styles.dropdownMenuStyle}
+    />
+            </View>
+          </View>
         </View>
 
         <View style={{ alignSelf: 'center', width: '80%', marginTop: 30 }}>
@@ -98,6 +177,52 @@ const styles = StyleSheet.create({
   },
   textHeaders: {
     fontSize: 24,
+  },
+  dropdownButtonStyle: {
+    width: 250,
+    height: 50,
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    marginTop: 20,
+  },
+  dropdownButtonTxtStyle: {
+    flex: 1,
+    fontSize: 18,
+    fontWeight: '500',
+    color: '#151E26',
+  },
+  dropdownButtonArrowStyle: {
+    fontSize: 28,
+  },
+  dropdownButtonIconStyle: {
+    fontSize: 28,
+    marginRight: 8,
+  },
+  dropdownMenuStyle: {
+    backgroundColor: '#E9ECEF',
+    borderRadius: 8,
+  },
+  dropdownItemStyle: {
+    width: '100%',
+    flexDirection: 'row',
+    paddingHorizontal: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 8,
+  },
+  dropdownItemTxtStyle: {
+    flex: 1,
+    fontSize: 18,
+    fontWeight: '500',
+    color: '#151E26',
+  },
+  dropdownItemIconStyle: {
+    fontSize: 28,
+    marginRight: 8,
   },
   table: {
     marginTop: 20,
