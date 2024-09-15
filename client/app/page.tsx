@@ -35,7 +35,7 @@ export default function RootLayout() {
       {
         !loggedIn ? (
           <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="(accounts)" options={{ headerShown: false }} />
             <Stack.Screen name="+not-found" />
           </Stack>
         ) : (

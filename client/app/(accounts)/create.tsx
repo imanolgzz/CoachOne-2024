@@ -1,16 +1,13 @@
 import React from "react";
 import { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, Dimensions, TouchableOpacity, ScrollView, SafeAreaView} from "react-native";
-import { useRouter } from 'expo-router';
 
 const { width, height } = Dimensions.get('window');
 
 export default function CreateAccount() {
-    const router = useRouter();
     const [user, setUser] = React.useState('');
     const [pass, setPass] = React.useState('');
     const [number, onChangeNumber] = React.useState('');
-    const [isChecked, setChecked] = useState(false);
 
     return (
         <SafeAreaView style={{flex: 1, marginTop: 30}}>
