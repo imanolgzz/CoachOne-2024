@@ -35,7 +35,7 @@ export default function InvestmentSceen() {
                     </Text>
                 </View>
                 <View style={{alignItems: 'center', marginTop: 20}}>
-                    <View elevation={5} style={styles.boxContainer}>
+                    <View /*elevation={5}*/ style={styles.boxContainer}>
                         <View style={{flex: 0.8, justifyContent: 'center'}}>
                             <Text style={styles.investmentText}>${apiValue}</Text>
                         </View>

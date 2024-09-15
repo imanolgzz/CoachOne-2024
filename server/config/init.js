@@ -8,6 +8,7 @@ const config = {
     host: 'mongo',
     port: 27017,
     name: 'mydatabase'
-  }
+  },
+  apiKey:process.env.OPENAI_API_KEY
 }
 export {config}

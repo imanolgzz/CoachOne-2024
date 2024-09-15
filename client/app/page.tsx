@@ -33,15 +33,15 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       {
-        !loggedIn ? (
+      !(loggedIn && loggedIn !== "Invalido" && loggedIn !== "Error") ? (
           <Stack>
             <Stack.Screen name="(accounts)" options={{ headerShown: false }} />
-            <Stack.Screen name="+not-found" />
+            <Stack.Screen name="+not-found"/>
           </Stack>
         ) : (
           <Stack>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="+not-found" />
+            <Stack.Screen name="+not-found"/>
           </Stack>
         )
       }
