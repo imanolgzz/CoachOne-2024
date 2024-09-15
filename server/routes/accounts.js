@@ -38,17 +38,20 @@ curl -X POST --header "Content-Type: application/json" --header "Accept: applica
   \"balance\": 0,
   \"account_number\": \"string\"
 }" "http://api.nessieisreal.com/customers/adsfasdfasdfdfadfasdfdsfasdfasdf/accounts?key=8d03edc1ac4aba2e9db9aa396a68bfb3"
-
-
   */
-
+ // generate a random 16 digit account number
+  let account_number = "";
+  for(let i = 0; i < 16; i++){
+    account_number += Math.floor(Math.random() * 10);
+  }
+ 
   const url = `http://api.nessieisreal.com/customers/${user_id}/accounts?key=${config.capitalone_api_key}`;
   const data = {
     type: type,
     nickname: "string",
     rewards: 0,
     balance: 0,
-    account_number: account_type
+    account_number: account_number
   };
 
   let response = await fetch(url, {
