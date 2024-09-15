@@ -1,3 +1,4 @@
 import authRouter from "./auth.js";
+import accountsRouter from "./accounts.js";
 
-export default {authRouter};
+export { authRouter, accountsRouter };
