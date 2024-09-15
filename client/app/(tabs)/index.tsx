@@ -44,7 +44,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   imageLogo : {
     width: 150,
-    height: 65
+    height: 50,
   },
   clientName : {
     marginTop: 15,

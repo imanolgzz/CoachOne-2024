@@ -68,6 +68,7 @@ export default function Login() {
                 </View>
                 <View style={loggedIn === "Invalido" ? LoginStyles.incorrectField : LoginStyles.inputContainer}>
                     <TextInput
+                        inputMode="email"
                         style={LoginStyles.input}
                         value={user}
                         placeholder=" "
